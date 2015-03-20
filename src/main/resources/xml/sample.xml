@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--Sample xslt transformation xml file to fo file -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:fo="http://www.w3.org/1999/XSL/Format"
+                version='1.0'>
+<xsl:output method="xml" indent="yes"/>
+<xsl:param name="data"/>
+<xsl:param name="data_ru"/>
+    <xsl:template match="/">
+        <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" language="ru">
+            <fo:layout-master-set>
+                <fo:simple-page-master master-name="simpleA4" page-height="29.7cm" page-width="21cm" margin-top="2cm" margin-bottom="2cm" margin-left="2cm" margin-right="2cm">
+                    <fo:region-body/>
+                </fo:simple-page-master>
+            </fo:layout-master-set>
+            <fo:page-sequence master-reference="simpleA4">
+                <fo:flow flow-name="xsl-region-body">
+                    <fo:block font-family="Open Sans"><xsl:value-of select="$data"/></fo:block>
+                    <fo:block font-family="Lora"><xsl:value-of select="$data_ru"/></fo:block>
+                    <fo:block font-family="Calligraffitti"><xsl:value-of select="$data"/></fo:block>
+                </fo:flow>
+            </fo:page-sequence>
+        </fo:root>
+    </xsl:template>
+</xsl:stylesheet>

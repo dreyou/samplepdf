@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <!--
+    -->
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.11.4/jquery-ui.theme.min.css">
+    <link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.11.4/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="/webjars/codemirror/3.11/lib/codemirror.css">
+    <style>
+        .CodeMirror {border: 1px solid #ddd; width: 100%; font-size: xx-small}
+    </style>
+</head>
+<body style="margin: 10px">
+
+<div style="clear: right;">
+    <div id="input_header" style="width: 60%;margin-bottom: 5px; float:left">
+       Sample XML to FO to PDF converter
+     </div>
+     <div id="output_header" style="width: 39%;margin-bottom: 5px;text-align: right; float:left">
+         <form>
+             <input type="button" onclick="showfonts();" value="Fonts"/>
+             <input type="button" onclick="show();" value="Show"/>
+             <input type="button" onclick="download();" value="Download"/>
+        </form>
+     </div>
+</div>
+
+<div id="input_data" style="width: 60%; float:left">
+    <form>
+            <textarea name="par" id="par">
+            </textarea>
+            <textarea name="xml" id="xml">
+            </textarea>
+            <textarea name="xsl" id="xsl">
+            </textarea>
+     </form>
+</div>
+
+<div id="output_data" style="width:39%;float: left;margin-left: 10px;">
+<img style="box-shadow:1px 1px 10px gray;" width="100%" height="auto" id="imgRaw"/>
+</div>
+
+<div id="fontshow" title="Google Fonts Available">
+     <div id="fontdata"></div>
+</div>
+
+<script type="text/javascript" src="/webjars/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="/webjars/jquery-ui/1.11.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/webjars/codemirror/3.11/lib/codemirror.js"></script>
+<script type="text/javascript" src="/webjars/codemirror/3.11/mode/xml/xml.js"></script>
+<script type="text/javascript" src="/webjars/codemirror/3.11/mode/yaml/yaml.js"></script>
+<script type="text/javascript" src="/webjars/codemirror/3.11/addon/selection/active-line.js"></script>
+<script>
+
+    var sample = "welcome";
+
+    var editorPar;
+    var editorXml;
+    var editorXsl;
+
+    $( "#fontshow" ).dialog();
+    $( "#fontshow" ).dialog("close");
+
+    function showfonts() {
+        $('#fontshow').dialog({
+                open: function( event, ui ) {
+                    $.ajax("/fonts.html").done(function(res){
+                                $("#fontdata").html(res);
+                            }
+                    )
+                }
+        });
+    }
+
+    function updateEditors() {
+        editorPar = CodeMirror.fromTextArea(document.getElementById("par"), {
+            mode: "yaml",
+            styleActiveLine: true,
+            lineNumbers: false,
+            lineWrapping: false
+        });
+        editorPar.setSize("100%",80);
+
+        editorXml = CodeMirror.fromTextArea(document.getElementById("xml"), {
+            mode: "application/xml",
+            styleActiveLine: true,
+            lineNumbers: true,
+            lineWrapping: true
+        });
+
+        editorXsl = CodeMirror.fromTextArea(document.getElementById("xsl"), {
+            mode: "application/xml",
+            styleActiveLine: true,
+            lineNumbers: true,
+            lineWrapping: true
+        });
+    }
+
+    function start(){
+        $("#imgRaw").removeAttr("src").attr("src","/samplepng");
+        $.getJSON( "/sample/"+sample, function( data ) {
+            $('#xml').val(data.xml);
+            $('#xsl').val(data.xsl);
+            $('#par').val(data.par);
+            updateEditors();
+        });
+    }
+
+    function show(){
+        var xml = editorXml.getValue();
+        var xsl = editorXsl.getValue();
+        var par = editorPar.getValue();
+        var enc = "base64";
+        $.post( "/generatepng", { xml: xml, xsl: xsl, par: par, enc:enc }).done(function( data ) {
+            $("#imgRaw").removeAttr("src").attr("src","data:image/png;base64,"+data);
+        });
+    }
+
+    function download(){
+        var xml = editorXml.getValue();
+        var xsl = editorXsl.getValue();
+        var par = editorPar.getValue();
+        var enc = "base64";
+        $.post( "/generatepdf", { xml: xml, xsl: xsl, par: par, enc:enc }).done(function( data ) {
+            window.open("data:application/pdf;base64,"+data);
+        });
+    }
+
+    start();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--Sample xslt transformation-->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                version='1.0'
+                xmlns:map="java.util.Map">
+<xsl:output method="xml" indent="yes"/>
+<xsl:param name="data"/>
+    <xsl:template match="/">
+        <xsl:value-of select="map:get($data,'local.value')"/>
+    </xsl:template>
+</xsl:stylesheet>
