@@ -17,7 +17,7 @@
                 <fo:flow flow-name="xsl-region-body">
                     <fo:block font-family="Open Sans" font-size="12pt" font-weight="bold" space-after.optimum="24pt">Sample XML to FO to PDF converter</fo:block>
                     <fo:block font-family="Open Sans">Here is data from xml: <xsl:value-of select="data/main"></xsl:value-of></fo:block>
-                    <fo:block font-family="Open Sans">Here is data parameter: <xsl:value-of select="$data"></xsl:value-of></fo:block>
+                    <fo:block font-family="Open Sans">Here is data parameter: <xsl:value-of select="format-number($data,'0.0000')"></xsl:value-of></fo:block>
                     <fo:block font-family="Open Sans">Here is text parameter: <xsl:value-of select="$text"></xsl:value-of></fo:block>
                 </fo:flow>
             </fo:page-sequence>

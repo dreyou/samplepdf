@@ -52,14 +52,12 @@ public class PdfController {
         }
         Yaml yaml = new Yaml();
         Map<String,Object> par =(Map<String, Object>)yaml.load(yml);
-        generateOut(par,xml,xsl, MimeConstants.MIME_PDF,"generated.pdf",request,response,enc);
         switch (out){
             case "pdf":generateOut(par,xml,xsl, MimeConstants.MIME_PDF,"generated.pdf",request,response,enc);
                 break;
             case "png":generateOut(par,xml,xsl, MimeConstants.MIME_PNG,"generated.png",request,response,enc);
                 break;
         }
-
     }
 
     @RequestMapping(value={"/samplepdf"},method = RequestMethod.GET)
