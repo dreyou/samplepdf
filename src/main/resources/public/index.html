@@ -18,7 +18,7 @@
 
 <div style="clear: right;">
     <div id="input_header" style="width: 60%;margin-bottom: 5px; float:left">
-       <strong>Sample XML to FO to PDF converter</strong>
+       <strong>Sample XML to FO to PDF converter</strong> <span id="version" style="font-size: xx-small"/>
      </div>
      <div id="output_header" style="width: 39%;margin-bottom: 5px;text-align: right; float:left">
          <form>
@@ -107,6 +107,9 @@
             $('#xsl').val(data.xsl);
             $('#par').val(data.par);
             updateEditors();
+        });
+        $.getJSON( "/misc", function( data ) {
+            $('#version').html("v"+data.version);
         });
     }
 
